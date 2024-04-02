@@ -1,0 +1,45 @@
+---
+- hosts: all
+  become: true
+  pre_tasks:
+    - name: Deploy Git Repository on Apache Server (Ubuntu and CentOS)
+      package:
+        update_cache: yes
+      changed_when: false
+
+- hosts: all
+  become: true
+  vars:
+    github_repo_url: https://github.com/ajibx/WDT.git
+    destination_path: /var/www/html
+
+  tasks:
+    - name: Install git (Ubuntu and Centos)
+      tags: ubuntu,centos,git
+      package:
+        name: git
+        state: present
+
+    - name: Install Apache
+      tags: ubuntu,centos,apache
+      package:
+        name: "{{ Apache_package_name }}"
+        state: present
+
+    - name: Clone github website repository
+      git:
+        repo: "{{ github_repo_url }}"
+        dest: "{{ destination_path }}"
+        clone: yes
+
+    - name: Start Apache Centos
+      service:
+        name: "{{ Apache_service_name }}"
+        state: started
+      when: ansible_distribution == 'CentOS'
+
+    - name: Enable Apache Centos
+      service:
+        name: "{{ Apache_service_name }}"
+        enabled: yes
+      when: ansible_distribution == 'CentOS'
