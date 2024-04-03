@@ -10,8 +10,8 @@
 - hosts: all
   become: true
   vars:
-    github_repo_url: https://github.com/ajibx/WDT.git
-    destination_path: /var/www/html
+    repo_url: https://github.com/ajibx/WDT.git
+    repo_root: /var/www/html
 
   tasks:
     - name: Install git (Ubuntu and Centos)
@@ -28,8 +28,8 @@
 
     - name: Clone github website repository
       git:
-        repo: "{{ github_repo_url }}"
-        dest: "{{ destination_path }}"
+        repo: "{{ repo_url }}"
+        dest: "{{ repo_root }}"
         clone: yes
 
     - name: Start Apache Centos
